@@ -1,0 +1,381 @@
+@import "tailwindcss";
+@import "lenis/dist/lenis.css";
+
+@theme {
+  --color-obsidian: #151311;
+  --color-espresso: #3b302b;
+  --color-amber: #a47a54;
+  /* Amber darkened for small text on light surfaces (WCAG AA) */
+  --color-amber-deep: #7e5a3b;
+  --color-sand: #d8c7b0;
+  --color-ivory: #f3eee7;
+  --color-ink-soft: #5e534d;
+  --color-line: rgb(59 48 43 / 0.16);
+  --color-line-dark: rgb(216 199 176 / 0.18);
+
+  --font-serif: var(--font-cormorant), "Times New Roman", serif;
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+
+  /* Fluid type scale */
+  --text-micro: 0.6875rem;
+  --text-micro--letter-spacing: 0.22em;
+  --text-ui: 0.8125rem;
+  --text-ui--line-height: 1.5;
+  --text-body: clamp(0.95rem, 0.9rem + 0.22vw, 1.0625rem);
+  --text-body--line-height: 1.7;
+  --text-lead: clamp(1.15rem, 1rem + 0.6vw, 1.55rem);
+  --text-lead--line-height: 1.45;
+  --text-h3: clamp(1.75rem, 1.35rem + 1.5vw, 2.85rem);
+  --text-h3--line-height: 1.08;
+  --text-h2: clamp(2.5rem, 1.6rem + 3.4vw, 5.25rem);
+  --text-h2--line-height: 1;
+  --text-h1: clamp(3rem, 1.4rem + 6vw, 8.25rem);
+  --text-h1--line-height: 0.94;
+  --text-mega: clamp(5rem, 1rem + 17vw, 19rem);
+  --text-mega--line-height: 0.8;
+
+  --ease-silk: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-veil: cubic-bezier(0.65, 0, 0.35, 1);
+
+  --spacing-gutter: clamp(1.25rem, 0.6rem + 3vw, 4.5rem);
+  --spacing-section: clamp(6rem, 4rem + 9vw, 13rem);
+  --spacing-header: 4.75rem;
+}
+
+@layer base {
+  html {
+    background: var(--color-obsidian);
+    color-scheme: light;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background: var(--color-ivory);
+    color: var(--color-espresso);
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    overflow-x: clip;
+  }
+
+  ::selection {
+    background: var(--color-amber);
+    color: var(--color-ivory);
+  }
+
+  :focus-visible {
+    outline: 1px solid currentColor;
+    outline-offset: 4px;
+  }
+
+  button,
+  [role="button"] {
+    cursor: pointer;
+  }
+
+  button:disabled {
+    cursor: not-allowed;
+  }
+
+  img {
+    user-select: none;
+  }
+}
+
+@layer components {
+  /* Native dialog used for drawers */
+  dialog.sora-dialog {
+    max-width: none;
+    max-height: none;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    overflow: hidden;
+  }
+  dialog.sora-dialog::backdrop {
+    background: transparent;
+  }
+
+  /* Small uppercase label used across the system */
+  .eyebrow {
+    font-family: var(--font-sans);
+    font-size: var(--text-micro);
+    letter-spacing: var(--text-micro--letter-spacing);
+    text-transform: uppercase;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  .display {
+    font-family: var(--font-serif);
+    font-weight: 300;
+    letter-spacing: -0.02em;
+  }
+
+  .shell {
+    width: 100%;
+    padding-inline: var(--spacing-gutter);
+    margin-inline: auto;
+    max-width: 120rem;
+  }
+
+  /* Text link with a quiet hairline that draws on hover */
+  .link-line {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding-block: 0.35rem;
+  }
+  .link-line::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: currentColor;
+    transform-origin: right;
+    transform: scaleX(0.35);
+    opacity: 0.55;
+    transition:
+      transform 0.7s var(--ease-silk),
+      opacity 0.7s var(--ease-silk);
+  }
+  .link-line:hover::after,
+  .link-line:focus-visible::after {
+    transform-origin: left;
+    transform: scaleX(1);
+    opacity: 1;
+  }
+
+  /* Same hairline, hidden until hover: for dense link lists */
+  .link-quiet::after {
+    transform: scaleX(0);
+  }
+
+  /* Primary button: hairline frame with a fill that rises on hover */
+  .btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    min-height: 3.25rem;
+    padding: 0 1.9rem;
+    border: 1px solid currentColor;
+    font-size: var(--text-micro);
+    letter-spacing: var(--text-micro--letter-spacing);
+    text-transform: uppercase;
+    font-weight: 500;
+    overflow: hidden;
+    isolation: isolate;
+    transition: color 0.6s var(--ease-silk);
+  }
+  .btn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: currentColor;
+    transform: scaleY(0);
+    transform-origin: bottom;
+    transition: transform 0.6s var(--ease-silk);
+  }
+  .btn-dark {
+    color: var(--color-espresso);
+  }
+  .btn-dark:hover:not(:disabled) {
+    color: var(--color-ivory);
+  }
+  .btn-light {
+    color: var(--color-ivory);
+  }
+  .btn-light:hover:not(:disabled) {
+    color: var(--color-obsidian);
+  }
+  .btn:hover:not(:disabled)::before {
+    transform: scaleY(1);
+  }
+  .btn-dark:hover:not(:disabled)::before {
+    background: var(--color-espresso);
+  }
+  .btn-light:hover:not(:disabled)::before {
+    background: var(--color-ivory);
+  }
+
+  /* Solid variant for primary commerce actions */
+  .btn-solid {
+    background: var(--color-espresso);
+    border-color: var(--color-espresso);
+    color: var(--color-ivory);
+  }
+  .btn-solid::before {
+    background: var(--color-obsidian);
+  }
+  .btn-solid:disabled {
+    opacity: 0.45;
+  }
+
+  .hairline {
+    height: 1px;
+    background: currentColor;
+    opacity: 0.18;
+  }
+
+  /* Form fields: underline only, editorial */
+  .field {
+    display: block;
+    width: 100%;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--color-line);
+    padding: 0.85rem 0 0.7rem;
+    font-size: 1rem;
+    color: inherit;
+    border-radius: 0;
+    transition: border-color 0.4s var(--ease-silk);
+    appearance: none;
+  }
+  .field:hover {
+    border-bottom-color: rgb(59 48 43 / 0.4);
+  }
+  .field:focus-visible {
+    outline: none;
+    border-bottom-color: var(--color-espresso);
+    box-shadow: 0 1px 0 0 var(--color-espresso);
+  }
+  .field[aria-invalid="true"] {
+    border-bottom-color: #8c3b2a;
+  }
+}
+
+/* Elements that GSAP reveals start hidden only when JS is running and motion is allowed */
+@media (prefers-reduced-motion: no-preference) {
+  html.js [data-reveal] {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ---------- Page transitions (React <ViewTransition>) ---------- */
+::view-transition {
+  pointer-events: none;
+}
+
+::view-transition-old(.sora-page) {
+  animation: sora-fade-out 380ms var(--ease-veil) both;
+}
+::view-transition-new(.sora-page) {
+  animation: sora-fade-in 620ms var(--ease-silk) 200ms both;
+}
+
+/* Shared bottle: card on the collection morphs into the product gallery */
+::view-transition-group(.sora-morph) {
+  animation-duration: 760ms;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  z-index: 50;
+}
+::view-transition-old(.sora-morph),
+::view-transition-new(.sora-morph) {
+  height: 100%;
+  object-fit: cover;
+}
+
+::view-transition-group(site-header) {
+  animation: none;
+  z-index: 100;
+}
+::view-transition-old(site-header) {
+  display: none;
+}
+::view-transition-new(site-header) {
+  animation: none;
+}
+
+@keyframes sora-fade-out {
+  to {
+    opacity: 0;
+    filter: brightness(0.4);
+  }
+}
+@keyframes sora-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(*),
+  ::view-transition-new(*),
+  ::view-transition-group(*) {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+  }
+}
+
+/* Hide scrollbars on horizontal galleries while keeping them scrollable */
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+
+
+/* Hero: a soft pool of light that widens to reveal the campaign photograph */
+.hero-media {
+  --reveal: 160%;
+  -webkit-mask-image: radial-gradient(
+    ellipse 80% 115% at 74% 45%,
+    #000 calc(var(--reveal) - 45%),
+    transparent var(--reveal)
+  );
+  mask-image: radial-gradient(ellipse 80% 115% at 74% 45%, #000 calc(var(--reveal) - 45%), transparent var(--reveal));
+}
+@media (prefers-reduced-motion: no-preference) {
+  html.js .hero-media {
+    --reveal: 0%;
+    opacity: 0;
+  }
+}
+
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+@keyframes badge-bump {
+  30% {
+    transform: scale(1.28);
+    background-color: currentColor;
+    color: transparent;
+  }
+}
